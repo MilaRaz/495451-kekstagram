@@ -1,105 +1,55 @@
 'use strict';
 
-var PHOTOS_COUNT = 24;
-var PHOTOS_COMMENTS = ['Всё отлично!', 'В целом всё неплохо. Но не всё.', 'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.', 'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.', 'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
-var MIN_LIKES = 15;
-var MAX_LIKES = 200;
-var MIN_COMMENTS = 0;
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
-var pictureTemplate = document.querySelector('#picture-template').content;
-var galleryOverlayPreview = document.querySelector('.gallery-overlay-preview');
-var picturesClass = document.querySelector('.pictures');
+var PHOTOS_COUNT = 25;
+var pictures = [];
+var PHOTOS_COMMENTS = [
+    'Всё отлично!', 
+    'В целом всё неплохо. Но не всё.',
+    'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 
+    'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
+    'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
+    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
+var PictureTemplate = document.querySelector('#picture-template').content;
+document.querySelector('.gallery-overlay').classList.remove('hidden');
+var GalleryOverlayPreview = document.querySelector('.gallery-overlay-preview');
+
 var getRandomNumber = function (min, max) {
+    
   return Math.floor(Math.random() * (max - min)) + min;
 };
-
 var generatePictures = function () {
-  var pictures = [];
-  for (var i = 0; i <= PHOTOS_COUNT; i++) {
-    var number = i + 1;
+  for (var i = 1; i <= PHOTOS_COUNT; i++) {
     pictures[i] =
     {
-      url: 'photos/' + number + '.jpg',
-      likes: getRandomNumber(MIN_LIKES, MAX_LIKES),
-      comments: getRandomNumber(MIN_COMMENTS, PHOTOS_COMMENTS.length)
+      url: 'photos/' + i + '.jpg',
+      likes: getRandomNumber(15, 200),
+      comments: getRandomNumber(0, PHOTOS_COMMENTS.length)
     };
   }
-  return pictures;
 };
-var pictures = generatePictures();
+generatePictures();
 
 var renderPicture = function (photo) {
-  var pictureElement = pictureTemplate.cloneNode(true);
+  var pictureElement = PictureTemplate.cloneNode(true);
   pictureElement.querySelector('.picture img').src = photo.url;
   pictureElement.querySelector('.picture-likes').textContent = photo.likes;
   pictureElement.querySelector('.picture-comments').textContent = photo.comments;
+    
   return pictureElement;
 };
 
 var renderAllPictures = function () {
   var fragment = document.createDocumentFragment();
-  for (var i = 0; i < PHOTOS_COUNT; i++) {
+  for (var i = 1; i < pictures.length; i++) {
     fragment.appendChild(renderPicture(pictures[i]));
   }
-  picturesClass.appendChild(fragment);
+  GalleryOverlayPreview.appendChild(fragment);
 };
 renderAllPictures();
 
-var renderFirstPicture = function (photo) {
-  galleryOverlayPreview.querySelector('.gallery-overlay-image ').src = photo.url;
-  galleryOverlayPreview.querySelector('.likes-count').textContent = photo.likes;
-  galleryOverlayPreview.querySelector('.comments-count').textContent = photo.comments;
+var renderFirstPicture = function () {
+  GalleryOverlayPreview.querySelector('.gallery-overlay-image ').src = pictures[1].url;
+  GalleryOverlayPreview.querySelector('.likes-count').textContent = pictures[1].likes;
+  GalleryOverlayPreview.querySelector('.comments-count').textContent = pictures[1].comments;
 };
-
-
-var picture = document.querySelector('.picture');
-var galleryClose = document.querySelector('.gallery-overlay-close');
-
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    closePopup();
-  }
-};
-var openPopup = function () {
-  document.addEventListener('keydown', onPopupEscPress);
-  document.querySelector('.gallery-overlay').classList.remove('hidden');
-};
-var closePopup = function () {
-  document.removeEventListener('keydown', onPopupEscPress);
-  document.querySelector('.gallery-overlay').classList.add('hidden');
-};
-
-picture.addEventListener('click', function () {
-  openPopup();
-});
-
-picture.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
-
-galleryClose.addEventListener('click', function () {
-  closePopup();
-});
-
-galleryClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    closePopup();
-  }
-});
-
-
-var photosElement = document.querySelectorAll('.picture');
-
-photosElement.forEach(function (item, index) {
-  var onItemClick = function (evt) {
-    evt.preventDefault();
-    openPopup();
-    renderFirstPicture(pictures[index]);
-  };
-
-  item.addEventListener('click', onItemClick);
-
-});
+renderFirstPicture();
