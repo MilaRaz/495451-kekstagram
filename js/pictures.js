@@ -8,11 +8,11 @@ var PHOTOS_COMMENTS = [
     'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.', 
     'Моя бабушка случайно чихнула с фотоаппаратом в руках и у неё получилась фотография лучше.',
     'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.',
-    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'];
+    'Лица у людей на фотке перекошены, как будто их избивают. Как можно было поймать такой неудачный момент?!'
+];
 var PictureTemplate = document.querySelector('#picture-template').content;
 document.querySelector('.gallery-overlay').classList.remove('hidden');
 var GalleryOverlayPreview = document.querySelector('.gallery-overlay-preview');
-
 var getRandomNumber = function (min, max) {
     
   return Math.floor(Math.random() * (max - min)) + min;
@@ -27,7 +27,6 @@ var generatePictures = function () {
     };
   }
 };
-generatePictures();
 
 var renderPicture = function (photo) {
   var pictureElement = PictureTemplate.cloneNode(true);
@@ -45,11 +44,12 @@ var renderAllPictures = function () {
   }
   GalleryOverlayPreview.appendChild(fragment);
 };
-renderAllPictures();
 
 var renderFirstPicture = function () {
   GalleryOverlayPreview.querySelector('.gallery-overlay-image ').src = pictures[1].url;
   GalleryOverlayPreview.querySelector('.likes-count').textContent = pictures[1].likes;
   GalleryOverlayPreview.querySelector('.comments-count').textContent = pictures[1].comments;
 };
+generatePictures();
+renderAllPictures();
 renderFirstPicture();
